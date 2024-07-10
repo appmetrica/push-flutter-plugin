@@ -1,0 +1,13 @@
+.DS_Store
+.dart_tool/
+.iml
+local.properties
+
+.packages
+.pub/
+pubspec.lock
+
+*.mocks.dart
+
+build/
+!.idea/copyright

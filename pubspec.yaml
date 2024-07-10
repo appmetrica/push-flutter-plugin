@@ -1,0 +1,31 @@
+name: appmetrica_push_plugin
+description: A Flutter plugin for AppMetrica Push SDK by Yandex. The AppMetrica Push SDK is a set of libraries for working with push notifications.
+version: 1.1.0
+homepage: https://appmetrica.io/about
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.20.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  appmetrica_plugin: ^2.0.0
+
+dev_dependencies:
+  pigeon: ^10.0.0
+  flutter_test:
+    sdk: flutter
+  mockito: ^5.4.0
+  build_runner: ^2.3.3
+  channel: ^2.0.0
+  flutter_lints: ^2.0.3
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.appmetrica.analytics.push.flutter
+        pluginClass: AppMetricaPushPlugin
+      ios:
+        pluginClass: AMPFAppMetricaPushPlugin
