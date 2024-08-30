@@ -26,10 +26,10 @@ class AppMetricaPush {
 
   /// Initializes the library in the app. Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activate() {
-    ActivationConfigHolder.activationListener = (metricaConfig) =>
+    AppMetricaActivationConfigHolder.activationListener = (metricaConfig) =>
         _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
 
-    _saveAppMetricaConfigToPreferences(ActivationConfigHolder.lastActivationConfig).ignore();
+    _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
     TokenUpdateApi.setup(_TokenUpdateImpl());
     return _appMetricaPush.activate();
   }

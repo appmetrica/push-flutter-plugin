@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  appmetrica_plugin: ^2.0.0
+  appmetrica_plugin: ^3.0.0
 
 dev_dependencies:
   pigeon: ^10.0.0

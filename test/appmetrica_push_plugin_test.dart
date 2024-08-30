@@ -37,7 +37,7 @@ void main() {
 
     when(config.toJson())
         .thenAnswer((realInvocation) => Future.value(configJson));
-    ActivationConfigHolder.lastActivationConfig = config;
+    AppMetricaActivationConfigHolder.lastActivationConfig = config;
     when(mock.call(any)).thenAnswer(stubHandler);
 
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
