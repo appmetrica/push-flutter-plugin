@@ -1,3 +1,5 @@
+## 2.1.0
+
 ## 2.0.0
 
 - Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `3.0.0`.
