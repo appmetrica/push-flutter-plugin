@@ -23,7 +23,7 @@ void main() {
     when(mock.call(any))
         .thenAnswer((_) => Future.value(codec.encodeMessage([])));
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.activate', mock);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', mock);
     await AppMetricaPush.activate();
     verify(mock.call(any));
   });
@@ -41,9 +41,9 @@ void main() {
     when(mock.call(any)).thenAnswer(stubHandler);
 
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.activate', stubHandler);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', stubHandler);
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.saveAppMetricaConfig', mock);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.saveAppMetricaConfig', mock);
     await AppMetricaPush.activate();
     expect(
         codec.decodeMessage(verify(mock.call(captureAny)).captured.first).first,
@@ -53,7 +53,7 @@ void main() {
   testWidgets('Test Get Tokens', (WidgetTester tester) async {
     var tokens = {"service1": "token1", "service2": "token2"};
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.getTokens', (_) {
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.getTokens', (_) {
       return Future.value(codec.encodeMessage([tokens]));
     });
     expect(await AppMetricaPush.getTokens(), tokens);
@@ -64,7 +64,7 @@ void main() {
     when(mock.call(any))
         .thenAnswer((_) => Future.value(codec.encodeMessage([])));
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.requestPermission', mock);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.requestPermission', mock);
     await AppMetricaPush.requestPermission(
         alert: false, badge: true, sound: true);
     verify(mock.call(any));
@@ -72,13 +72,13 @@ void main() {
 
   testWidgets('Test Token Stream', (WidgetTester tester) async {
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.activate', stubHandler);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', stubHandler);
     var tokens = {"service1": "token1", "service2": "token2"};
     await AppMetricaPush.activate();
     final channel = Channel<Map<String, String?>>();
     AppMetricaPush.tokenStream.listen((event) => channel.send(event));
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
-        'dev.flutter.pigeon.TokenUpdateApi.onTokenUpdated',
+        'dev.flutter.pigeon.appmetrica_push_plugin.TokenUpdateApi.onTokenUpdated',
         codec.encodeMessage([tokens]),
         (data) {});
     expect((await channel.receive()).data, tokens);
@@ -87,7 +87,7 @@ void main() {
   testWidgets('Test Token Stream Multiple Subscribers',
       (WidgetTester tester) async {
     tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.AppMetricaPushPigeon.activate', stubHandler);
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', stubHandler);
     var tokens = {"service1": "token1", "service2": "token2"};
     await AppMetricaPush.activate();
     final channel = Channel<Map<String, String?>>();
@@ -96,7 +96,7 @@ void main() {
         AppMetricaPush.tokenStream.listen((event) => channel.send(event));
     AppMetricaPush.tokenStream.listen((event) => anotherChannel.send(event));
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
-        'dev.flutter.pigeon.TokenUpdateApi.onTokenUpdated',
+        'dev.flutter.pigeon.appmetrica_push_plugin.TokenUpdateApi.onTokenUpdated',
         codec.encodeMessage([tokens]),
         (data) {});
     expect((await channel.receive()).data, tokens);
@@ -106,7 +106,7 @@ void main() {
 
     var newTokens = {"service1": "newToken1", "service2": "newToken2"};
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
-        'dev.flutter.pigeon.TokenUpdateApi.onTokenUpdated',
+        'dev.flutter.pigeon.appmetrica_push_plugin.TokenUpdateApi.onTokenUpdated',
         codec.encodeMessage([newTokens]),
         (data) {});
     expect((await anotherChannel.receive()).data, newTokens);
