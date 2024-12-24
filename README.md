@@ -34,7 +34,7 @@ AppMetricaPush.tokenStream.listen((tokens) {
 });
 ```
 
-Complete integration with connection of push transport for all target platforms according to its documentation.
+Complete integration with connection of push transport for all target platforms as described [here](https://appmetrica.io/docs/en/sdk/flutter/push/quick-start).
 
 ## Suggesting improvements
 To file bugs, make feature requests, or to suggest other improvements, please use the [feedback form](https://appmetrica.io/docs/en/troubleshooting/index).
