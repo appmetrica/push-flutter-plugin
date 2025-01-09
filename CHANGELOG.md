@@ -1,5 +1,7 @@
 ## 2.1.0
 
+- Improve statistics when using with Yandex.Ads SDK. Add meta-data with plugin description to AndroidManifest.
+
 ## 2.0.0
 
 - Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `3.0.0`.
