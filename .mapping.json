@@ -1,4 +1,5 @@
 {
+  ".":"mobile/metrika/flutter/appmetrica_push_plugin",
   ".gitignore":"mobile/metrika/flutter/appmetrica_push_plugin/.gitignore",
   ".metadata":"mobile/metrika/flutter/appmetrica_push_plugin/.metadata",
   ".pubignore":"mobile/metrika/flutter/appmetrica_push_plugin/.pubignore",
