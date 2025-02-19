@@ -15,6 +15,8 @@ public class AppMetricaPushImpl implements Pigeon.AppMetricaPushPigeon {
     @NonNull
     private final Context context;
     @NonNull
+    private final LaunchIntentHolder launchIntentHolder;
+    @NonNull
     private final Pigeon.TokenUpdateApi tokenUpdateApi;
 
     @NonNull
@@ -22,9 +24,11 @@ public class AppMetricaPushImpl implements Pigeon.AppMetricaPushPigeon {
 
     public AppMetricaPushImpl(
         @NonNull final Context context,
+        @NonNull final LaunchIntentHolder launchIntentHolder,
         @NonNull final Pigeon.TokenUpdateApi tokenUpdateApi
     ) {
         this.context = context;
+        this.launchIntentHolder = launchIntentHolder;
         this.tokenUpdateApi = tokenUpdateApi;
     }
 
@@ -52,5 +56,10 @@ public class AppMetricaPushImpl implements Pigeon.AppMetricaPushPigeon {
     public void getTokens(@NonNull Pigeon.Result<Map<String, String>> result) {
         final Map<String, String> tokens = AppMetricaPush.getTokens();
         result.success(tokens != null ? tokens : new HashMap<>());
+    }
+
+    @Override
+    public void getLaunchPushInfo(@NonNull Pigeon.Result<Pigeon.AppMetricaPushInfoPigeon> result) {
+        result.success(IntentToPushInfoConverter.convert(launchIntentHolder.initialIntent));
     }
 }

@@ -3,12 +3,20 @@ import 'dart:async';
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 
 import 'appmetrica_push_api_pigeon.dart';
+import 'appmetrica_push_info.dart';
 
 class _TokenUpdateImpl extends TokenUpdateApi {
   @override
   void onTokenUpdated(Map<String?, String?> newTokens) {
     AppMetricaPush._tokenStreamController
         .add(newTokens.map((key, value) => MapEntry(key as String, value)));
+  }
+}
+
+class _PushReceiverApiImpl extends PushReceiverApi {
+  @override
+  void onPushReceived(AppMetricaPushInfoPigeon pushInfoPigeon) {
+    AppMetricaPush._pushInfoStreamController.add(AppMetricaPushInfo.fromPigeon(pushInfoPigeon));
   }
 }
 
@@ -19,10 +27,17 @@ class AppMetricaPush {
   static final _appMetricaPush = AppMetricaPushPigeon();
   static final _tokenStreamController =
       StreamController<Map<String, String?>>.broadcast();
+  static final _pushInfoStreamController =
+      StreamController<AppMetricaPushInfo>.broadcast();
 
   /// Token update stream.
   static Stream<Map<String, String?>> get tokenStream =>
       _tokenStreamController.stream;
+
+  /// Push info stream. New elements appear after user clicks on push notification.
+  static Stream<AppMetricaPushInfo> get pushClickStream {
+    return _pushInfoStreamController.stream;
+  }
 
   /// Initializes the library in the app. Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activate() {
@@ -31,6 +46,7 @@ class AppMetricaPush {
 
     _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
     TokenUpdateApi.setup(_TokenUpdateImpl());
+    PushReceiverApi.setup(_PushReceiverApiImpl());
     return _appMetricaPush.activate();
   }
 
@@ -50,6 +66,10 @@ class AppMetricaPush {
   static Future<Map<String, String?>> getTokens() =>
       _appMetricaPush.getTokens().then(
           (value) => value.map((key, value) => MapEntry(key as String, value)));
+
+  /// Returns push info of push notification that launched application.
+  static Future<AppMetricaPushInfo> getLaunchPushInfo() =>
+      _appMetricaPush.getLaunchPushInfo().then((value) => AppMetricaPushInfo.fromPigeon(value));
 
   static Future<void> _saveAppMetricaConfigToPreferences(
       final AppMetricaConfig? config) async {

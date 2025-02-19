@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class AMPFPermissionOptions;
+@class AMPFAppMetricaPushInfoPigeon;
 
 @interface AMPFPermissionOptions : NSObject
 /// `init` unavailable to enforce nonnull fields, see the `make` class method.
@@ -23,6 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) NSNumber * sound;
 @end
 
+@interface AMPFAppMetricaPushInfoPigeon : NSObject
++ (instancetype)makeWithPayload:(nullable NSString *)payload;
+@property(nonatomic, copy, nullable) NSString * payload;
+@end
+
 /// The codec used by AMPFAppMetricaPushPigeon.
 NSObject<FlutterMessageCodec> *AMPFAppMetricaPushPigeonGetCodec(void);
 
@@ -30,6 +36,7 @@ NSObject<FlutterMessageCodec> *AMPFAppMetricaPushPigeonGetCodec(void);
 - (void)activateWithError:(FlutterError *_Nullable *_Nonnull)error;
 - (void)saveAppMetricaConfigConfig:(NSString *)config error:(FlutterError *_Nullable *_Nonnull)error;
 - (void)getTokensWithCompletion:(void (^)(NSDictionary<NSString *, NSString *> *_Nullable, FlutterError *_Nullable))completion;
+- (void)getLaunchPushInfoWithCompletion:(void (^)(AMPFAppMetricaPushInfoPigeon *_Nullable, FlutterError *_Nullable))completion;
 - (void)requestPermissionOptions:(AMPFPermissionOptions *)options error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
@@ -41,6 +48,14 @@ NSObject<FlutterMessageCodec> *AMPFTokenUpdateApiGetCodec(void);
 @interface AMPFTokenUpdateApi : NSObject
 - (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
 - (void)onTokenUpdatedNewTokens:(NSDictionary<NSString *, NSString *> *)newTokens completion:(void (^)(FlutterError *_Nullable))completion;
+@end
+
+/// The codec used by AMPFPushReceiverApi.
+NSObject<FlutterMessageCodec> *AMPFPushReceiverApiGetCodec(void);
+
+@interface AMPFPushReceiverApi : NSObject
+- (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
+- (void)onPushReceivedPushInfoPigeon:(AMPFAppMetricaPushInfoPigeon *)pushInfoPigeon completion:(void (^)(FlutterError *_Nullable))completion;
 @end
 
 NS_ASSUME_NONNULL_END

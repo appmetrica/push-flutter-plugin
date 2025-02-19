@@ -32,6 +32,12 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 - (NSArray *)toList;
 @end
 
+@interface AMPFAppMetricaPushInfoPigeon ()
++ (AMPFAppMetricaPushInfoPigeon *)fromList:(NSArray *)list;
++ (nullable AMPFAppMetricaPushInfoPigeon *)nullableFromList:(NSArray *)list;
+- (NSArray *)toList;
+@end
+
 @implementation AMPFPermissionOptions
 + (instancetype)makeWithAlert:(NSNumber *)alert
     badge:(NSNumber *)badge
@@ -64,12 +70,35 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 }
 @end
 
+@implementation AMPFAppMetricaPushInfoPigeon
++ (instancetype)makeWithPayload:(nullable NSString *)payload {
+  AMPFAppMetricaPushInfoPigeon* pigeonResult = [[AMPFAppMetricaPushInfoPigeon alloc] init];
+  pigeonResult.payload = payload;
+  return pigeonResult;
+}
++ (AMPFAppMetricaPushInfoPigeon *)fromList:(NSArray *)list {
+  AMPFAppMetricaPushInfoPigeon *pigeonResult = [[AMPFAppMetricaPushInfoPigeon alloc] init];
+  pigeonResult.payload = GetNullableObjectAtIndex(list, 0);
+  return pigeonResult;
+}
++ (nullable AMPFAppMetricaPushInfoPigeon *)nullableFromList:(NSArray *)list {
+  return (list) ? [AMPFAppMetricaPushInfoPigeon fromList:list] : nil;
+}
+- (NSArray *)toList {
+  return @[
+    (self.payload ?: [NSNull null]),
+  ];
+}
+@end
+
 @interface AMPFAppMetricaPushPigeonCodecReader : FlutterStandardReader
 @end
 @implementation AMPFAppMetricaPushPigeonCodecReader
 - (nullable id)readValueOfType:(UInt8)type {
   switch (type) {
     case 128: 
+      return [AMPFAppMetricaPushInfoPigeon fromList:[self readValue]];
+    case 129: 
       return [AMPFPermissionOptions fromList:[self readValue]];
     default:
       return [super readValueOfType:type];
@@ -81,8 +110,11 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 @end
 @implementation AMPFAppMetricaPushPigeonCodecWriter
 - (void)writeValue:(id)value {
-  if ([value isKindOfClass:[AMPFPermissionOptions class]]) {
+  if ([value isKindOfClass:[AMPFAppMetricaPushInfoPigeon class]]) {
     [self writeByte:128];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[AMPFPermissionOptions class]]) {
+    [self writeByte:129];
     [self writeValue:[value toList]];
   } else {
     [super writeValue:value];
@@ -168,6 +200,23 @@ void AMPFAppMetricaPushPigeonSetup(id<FlutterBinaryMessenger> binaryMessenger, N
   {
     FlutterBasicMessageChannel *channel =
       [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.getLaunchPushInfo"
+        binaryMessenger:binaryMessenger
+        codec:AMPFAppMetricaPushPigeonGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(getLaunchPushInfoWithCompletion:)], @"AMPFAppMetricaPushPigeon api (%@) doesn't respond to @selector(getLaunchPushInfoWithCompletion:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        [api getLaunchPushInfoWithCompletion:^(AMPFAppMetricaPushInfoPigeon *_Nullable output, FlutterError *_Nullable error) {
+          callback(wrapResult(output, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
         initWithName:@"dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.requestPermission"
         binaryMessenger:binaryMessenger
         codec:AMPFAppMetricaPushPigeonGetCodec()];
@@ -211,6 +260,78 @@ NSObject<FlutterMessageCodec> *AMPFTokenUpdateApiGetCodec(void) {
       binaryMessenger:self.binaryMessenger
       codec:AMPFTokenUpdateApiGetCodec()];
   [channel sendMessage:@[arg_newTokens ?: [NSNull null]] reply:^(id reply) {
+    completion(nil);
+  }];
+}
+@end
+
+@interface AMPFPushReceiverApiCodecReader : FlutterStandardReader
+@end
+@implementation AMPFPushReceiverApiCodecReader
+- (nullable id)readValueOfType:(UInt8)type {
+  switch (type) {
+    case 128: 
+      return [AMPFAppMetricaPushInfoPigeon fromList:[self readValue]];
+    default:
+      return [super readValueOfType:type];
+  }
+}
+@end
+
+@interface AMPFPushReceiverApiCodecWriter : FlutterStandardWriter
+@end
+@implementation AMPFPushReceiverApiCodecWriter
+- (void)writeValue:(id)value {
+  if ([value isKindOfClass:[AMPFAppMetricaPushInfoPigeon class]]) {
+    [self writeByte:128];
+    [self writeValue:[value toList]];
+  } else {
+    [super writeValue:value];
+  }
+}
+@end
+
+@interface AMPFPushReceiverApiCodecReaderWriter : FlutterStandardReaderWriter
+@end
+@implementation AMPFPushReceiverApiCodecReaderWriter
+- (FlutterStandardWriter *)writerWithData:(NSMutableData *)data {
+  return [[AMPFPushReceiverApiCodecWriter alloc] initWithData:data];
+}
+- (FlutterStandardReader *)readerWithData:(NSData *)data {
+  return [[AMPFPushReceiverApiCodecReader alloc] initWithData:data];
+}
+@end
+
+NSObject<FlutterMessageCodec> *AMPFPushReceiverApiGetCodec(void) {
+  static FlutterStandardMessageCodec *sSharedObject = nil;
+  static dispatch_once_t sPred = 0;
+  dispatch_once(&sPred, ^{
+    AMPFPushReceiverApiCodecReaderWriter *readerWriter = [[AMPFPushReceiverApiCodecReaderWriter alloc] init];
+    sSharedObject = [FlutterStandardMessageCodec codecWithReaderWriter:readerWriter];
+  });
+  return sSharedObject;
+}
+
+@interface AMPFPushReceiverApi ()
+@property(nonatomic, strong) NSObject<FlutterBinaryMessenger> *binaryMessenger;
+@end
+
+@implementation AMPFPushReceiverApi
+
+- (instancetype)initWithBinaryMessenger:(NSObject<FlutterBinaryMessenger> *)binaryMessenger {
+  self = [super init];
+  if (self) {
+    _binaryMessenger = binaryMessenger;
+  }
+  return self;
+}
+- (void)onPushReceivedPushInfoPigeon:(AMPFAppMetricaPushInfoPigeon *)arg_pushInfoPigeon completion:(void (^)(FlutterError *_Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.appmetrica_push_plugin.PushReceiverApi.onPushReceived"
+      binaryMessenger:self.binaryMessenger
+      codec:AMPFPushReceiverApiGetCodec()];
+  [channel sendMessage:@[arg_pushInfoPigeon ?: [NSNull null]] reply:^(id reply) {
     completion(nil);
   }];
 }

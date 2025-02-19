@@ -6,6 +6,12 @@
 #import "AMPFTokenSender.h"
 #import "AMPFPermissionOptionsConverter.h"
 #import "AMPFUtils.h"
+#import "AMPFPigeon.h"
+#import "AMPFAppMetricaPushInfoConverter.h"
+
+@interface AMPFAppMetricaPushImplementation()
+@property(nonatomic, copy) NSDictionary *userInfo;
+@end
 
 @implementation AMPFAppMetricaPushImplementation
 
@@ -42,6 +48,19 @@
     } else {
         completion(@{@"apns": token}, nil);
     }
+}
+
+- (void)getLaunchPushInfoWithCompletion:(void (^)(AMPFAppMetricaPushInfoPigeon *, FlutterError *))completion {
+    if (self.userInfo != nil) {
+        completion([AMPFAppMetricaPushInfoConverter toPigeon:self.userInfo], nil);
+    } else {
+        completion([[AMPFAppMetricaPushInfoPigeon alloc] init], nil);
+    }
+}
+
+- (void)setUserInfo:(NSDictionary *)userInfo
+{
+    _userInfo = userInfo;
 }
 
 @end

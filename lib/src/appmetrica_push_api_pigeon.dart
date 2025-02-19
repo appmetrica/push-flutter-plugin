@@ -39,12 +39,36 @@ class PermissionOptions {
   }
 }
 
+class AppMetricaPushInfoPigeon {
+  AppMetricaPushInfoPigeon({
+    this.payload,
+  });
+
+  String? payload;
+
+  Object encode() {
+    return <Object?>[
+      payload,
+    ];
+  }
+
+  static AppMetricaPushInfoPigeon decode(Object result) {
+    result as List<Object?>;
+    return AppMetricaPushInfoPigeon(
+      payload: result[0] as String?,
+    );
+  }
+}
+
 class _AppMetricaPushPigeonCodec extends StandardMessageCodec {
   const _AppMetricaPushPigeonCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is PermissionOptions) {
+    if (value is AppMetricaPushInfoPigeon) {
       buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else if (value is PermissionOptions) {
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -55,6 +79,8 @@ class _AppMetricaPushPigeonCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
+        return AppMetricaPushInfoPigeon.decode(readValue(buffer)!);
+      case 129: 
         return PermissionOptions.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -143,6 +169,33 @@ class AppMetricaPushPigeon {
     }
   }
 
+  Future<AppMetricaPushInfoPigeon> getLaunchPushInfo() async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.getLaunchPushInfo', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(null) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as AppMetricaPushInfoPigeon?)!;
+    }
+  }
+
   Future<void> requestPermission(PermissionOptions arg_options) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.requestPermission', codec,
@@ -187,6 +240,57 @@ abstract class TokenUpdateApi {
           assert(arg_newTokens != null,
               'Argument for dev.flutter.pigeon.appmetrica_push_plugin.TokenUpdateApi.onTokenUpdated was null, expected non-null Map<String?, String?>.');
           api.onTokenUpdated(arg_newTokens!);
+          return;
+        });
+      }
+    }
+  }
+}
+
+class _PushReceiverApiCodec extends StandardMessageCodec {
+  const _PushReceiverApiCodec();
+  @override
+  void writeValue(WriteBuffer buffer, Object? value) {
+    if (value is AppMetricaPushInfoPigeon) {
+      buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else {
+      super.writeValue(buffer, value);
+    }
+  }
+
+  @override
+  Object? readValueOfType(int type, ReadBuffer buffer) {
+    switch (type) {
+      case 128: 
+        return AppMetricaPushInfoPigeon.decode(readValue(buffer)!);
+      default:
+        return super.readValueOfType(type, buffer);
+    }
+  }
+}
+
+abstract class PushReceiverApi {
+  static const MessageCodec<Object?> codec = _PushReceiverApiCodec();
+
+  void onPushReceived(AppMetricaPushInfoPigeon pushInfoPigeon);
+
+  static void setup(PushReceiverApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.appmetrica_push_plugin.PushReceiverApi.onPushReceived', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.appmetrica_push_plugin.PushReceiverApi.onPushReceived was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final AppMetricaPushInfoPigeon? arg_pushInfoPigeon = (args[0] as AppMetricaPushInfoPigeon?);
+          assert(arg_pushInfoPigeon != null,
+              'Argument for dev.flutter.pigeon.appmetrica_push_plugin.PushReceiverApi.onPushReceived was null, expected non-null AppMetricaPushInfoPigeon.');
+          api.onPushReceived(arg_pushInfoPigeon!);
           return;
         });
       }

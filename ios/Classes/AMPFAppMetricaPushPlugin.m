@@ -7,12 +7,14 @@
 #import "AMPFTokenStorage.h"
 #import "AMPFTokenSender.h"
 #import "AMPFUtils.h"
+#import "AMPFAppMetricaPushInfoConverter.h"
 
 @interface AMPFAppMetricaPushPlugin ()
 
 @property(nonatomic, readonly) NSObject<FlutterPluginRegistrar> *registrar;
 @property(nonatomic, strong, readonly) AMPFTokenUpdateApi *tokenUpdateApi;
-
+@property(nonatomic, strong, readonly) AMPFPushReceiverApi *pushReceiverApi;
+@property(nonatomic, strong, readonly) AMPFAppMetricaPushImplementation *appMetricaPush;
 @end
 
 @implementation AMPFAppMetricaPushPlugin
@@ -23,7 +25,10 @@
     if (self) {
         _registrar = registrar;
         _tokenUpdateApi = [[AMPFTokenUpdateApi alloc] initWithBinaryMessenger:registrar.messenger];
+        _pushReceiverApi = [[AMPFPushReceiverApi alloc] initWithBinaryMessenger:registrar.messenger];
+        _appMetricaPush = [[AMPFAppMetricaPushImplementation alloc] init];
 
+        AMPFAppMetricaPushPigeonSetup(registrar.messenger, self.appMetricaPush);
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(_application_onDidFinishLaunchingNotification:)
                                                      name:UIApplicationDidFinishLaunchingNotification
@@ -34,7 +39,6 @@
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar
 {
-    AMPFAppMetricaPushPigeonSetup(registrar.messenger, [[AMPFAppMetricaPushImplementation alloc] init]);
     [registrar publish:[[AMPFAppMetricaPushPlugin alloc] initWithFlutterPluginRegistrar:registrar]];
 }
 
@@ -54,6 +58,13 @@
 
     if ([AMPFAppMetricaHelper ensureActivated]) {
         [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:notification.userInfo];
+        [self.appMetricaPush setUserInfo:notification.userInfo];
+        [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:notification.userInfo]
+                                                completion:^(FlutterError *_Nullable error) {
+            if (error != nil) {
+                NSLog(@"%@", error.description);
+            }
+        }];
     }
 }
 
@@ -80,6 +91,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
         if ([AMPFAppMetricaHelper ensureActivated]) {
             [AMPAppMetricaPush handleRemoteNotification:userInfo];
+            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                    completion:^(FlutterError *_Nullable error) {
+                if (error != nil) {
+                    NSLog(@"%@", error.description);
+                }
+            }];
         }
         completionHandler(UIBackgroundFetchResultNewData);
         return YES;

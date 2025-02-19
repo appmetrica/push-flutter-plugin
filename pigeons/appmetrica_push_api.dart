@@ -15,12 +15,18 @@ class PermissionOptions {
   bool sound;
 }
 
+class AppMetricaPushInfoPigeon {
+  String? payload;
+}
+
 @HostApi()
 abstract class AppMetricaPushPigeon {
   void activate();
   void saveAppMetricaConfig(String config);
   @async
   Map<String, String> getTokens();
+  @async
+  AppMetricaPushInfoPigeon getLaunchPushInfo();
 
   // only ios
   void requestPermission(PermissionOptions options);
@@ -29,4 +35,9 @@ abstract class AppMetricaPushPigeon {
 @FlutterApi()
 abstract class TokenUpdateApi {
   void onTokenUpdated(Map<String, String> newTokens);
+}
+
+@FlutterApi()
+abstract class PushReceiverApi {
+  void onPushReceived(AppMetricaPushInfoPigeon pushInfoPigeon);
 }

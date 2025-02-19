@@ -154,6 +154,49 @@ public class Pigeon {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class AppMetricaPushInfoPigeon {
+    private @Nullable String payload;
+
+    public @Nullable String getPayload() {
+      return payload;
+    }
+
+    public void setPayload(@Nullable String setterArg) {
+      this.payload = setterArg;
+    }
+
+    public static final class Builder {
+
+      private @Nullable String payload;
+
+      public @NonNull Builder setPayload(@Nullable String setterArg) {
+        this.payload = setterArg;
+        return this;
+      }
+
+      public @NonNull AppMetricaPushInfoPigeon build() {
+        AppMetricaPushInfoPigeon pigeonReturn = new AppMetricaPushInfoPigeon();
+        pigeonReturn.setPayload(payload);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(1);
+      toListResult.add(payload);
+      return toListResult;
+    }
+
+    static @NonNull AppMetricaPushInfoPigeon fromList(@NonNull ArrayList<Object> list) {
+      AppMetricaPushInfoPigeon pigeonResult = new AppMetricaPushInfoPigeon();
+      Object payload = list.get(0);
+      pigeonResult.setPayload((String) payload);
+      return pigeonResult;
+    }
+  }
+
   public interface Result<T> {
     @SuppressWarnings("UnknownNullness")
     void success(T result);
@@ -170,6 +213,8 @@ public class Pigeon {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
+          return AppMetricaPushInfoPigeon.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
           return PermissionOptions.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -178,8 +223,11 @@ public class Pigeon {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof PermissionOptions) {
+      if (value instanceof AppMetricaPushInfoPigeon) {
         stream.write(128);
+        writeValue(stream, ((AppMetricaPushInfoPigeon) value).toList());
+      } else if (value instanceof PermissionOptions) {
+        stream.write(129);
         writeValue(stream, ((PermissionOptions) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -195,6 +243,8 @@ public class Pigeon {
     void saveAppMetricaConfig(@NonNull String config);
 
     void getTokens(@NonNull Result<Map<String, String>> result);
+
+    void getLaunchPushInfo(@NonNull Result<AppMetricaPushInfoPigeon> result);
 
     void requestPermission(@NonNull PermissionOptions options);
 
@@ -280,6 +330,33 @@ public class Pigeon {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.getLaunchPushInfo", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                Result<AppMetricaPushInfoPigeon> resultCallback =
+                    new Result<AppMetricaPushInfoPigeon>() {
+                      public void success(AppMetricaPushInfoPigeon result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.getLaunchPushInfo(resultCallback);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
                 binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.requestPermission", getCodec());
         if (api != null) {
           channel.setMessageHandler(
@@ -326,6 +403,59 @@ public class Pigeon {
               binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.TokenUpdateApi.onTokenUpdated", getCodec());
       channel.send(
           new ArrayList<Object>(Collections.singletonList(newTokensArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+
+  private static class PushReceiverApiCodec extends StandardMessageCodec {
+    public static final PushReceiverApiCodec INSTANCE = new PushReceiverApiCodec();
+
+    private PushReceiverApiCodec() {}
+
+    @Override
+    protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
+      switch (type) {
+        case (byte) 128:
+          return AppMetricaPushInfoPigeon.fromList((ArrayList<Object>) readValue(buffer));
+        default:
+          return super.readValueOfType(type, buffer);
+      }
+    }
+
+    @Override
+    protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
+      if (value instanceof AppMetricaPushInfoPigeon) {
+        stream.write(128);
+        writeValue(stream, ((AppMetricaPushInfoPigeon) value).toList());
+      } else {
+        super.writeValue(stream, value);
+      }
+    }
+  }
+
+  /** Generated class from Pigeon that represents Flutter messages that can be called from Java. */
+  public static class PushReceiverApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public PushReceiverApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by PushReceiverApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return PushReceiverApiCodec.INSTANCE;
+    }
+    public void onPushReceived(@NonNull AppMetricaPushInfoPigeon pushInfoPigeonArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.PushReceiverApi.onPushReceived", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(pushInfoPigeonArg)),
           channelReply -> callback.reply(null));
     }
   }
