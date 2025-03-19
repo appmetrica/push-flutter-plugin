@@ -1,6 +1,9 @@
 ## 2.1.0
 
 - Add method do get `payload` from notification.
+- Native SDK versions:
+  - Android: 4.1.1
+  - iOS: ~> 3.0
 
 ## 2.0.0
 

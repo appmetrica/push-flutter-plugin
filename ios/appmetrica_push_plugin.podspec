@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.public_header_files = 'Classes/**/*.h', 'AppMetricaPushPlugin/*.h'
   s.dependency 'Flutter'
   s.dependency 'appmetrica_plugin'
-  s.dependency 'AppMetricaPush', '~> 2.0'
+  s.dependency 'AppMetricaPush', '~> 3.0'
   s.static_framework = true
   s.platform = :ios, '9.0'
 
