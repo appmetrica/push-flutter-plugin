@@ -14,6 +14,8 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 public class AppMetricaPushPlugin implements FlutterPlugin, ActivityAware {
 
     @Nullable
+    private AppMetricaPushImpl appMetricaPush = null;
+    @Nullable
     private Pigeon.PushReceiverApi pushReceiverApi = null;
     @NonNull
     private final LaunchIntentHolder launchIntentHolder = new LaunchIntentHolder();
@@ -21,14 +23,13 @@ public class AppMetricaPushPlugin implements FlutterPlugin, ActivityAware {
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         pushReceiverApi = new Pigeon.PushReceiverApi(binding.getBinaryMessenger());
+        appMetricaPush = new AppMetricaPushImpl(
+            binding.getApplicationContext(),
+            launchIntentHolder,
+            new Pigeon.TokenUpdateApi(binding.getBinaryMessenger())
+        );
 
-        Pigeon.AppMetricaPushPigeon.setup(
-            binding.getBinaryMessenger(),
-            new AppMetricaPushImpl(
-                binding.getApplicationContext(),
-                launchIntentHolder,
-                new Pigeon.TokenUpdateApi(binding.getBinaryMessenger())
-            ));
+        Pigeon.AppMetricaPushPigeon.setup(binding.getBinaryMessenger(), appMetricaPush);
     }
 
     @Override
@@ -37,6 +38,9 @@ public class AppMetricaPushPlugin implements FlutterPlugin, ActivityAware {
 
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        if (appMetricaPush != null) {
+            appMetricaPush.setApplication(binding.getActivity().getApplication());
+        }
         launchIntentHolder.initialIntent = binding.getActivity().getIntent();
         if (pushReceiverApi != null) {
             pushReceiverApi.onPushReceived(IntentToPushInfoConverter.convert(binding.getActivity().getIntent()), reply -> {});

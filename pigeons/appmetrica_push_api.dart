@@ -22,6 +22,7 @@ class AppMetricaPushInfoPigeon {
 @HostApi()
 abstract class AppMetricaPushPigeon {
   void activate();
+  void activateWithProviders(List<String> providers);
   void saveAppMetricaConfig(String config);
   @async
   Map<String, String> getTokens();

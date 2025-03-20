@@ -4,6 +4,7 @@ import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 
 import 'appmetrica_push_api_pigeon.dart';
 import 'appmetrica_push_info.dart';
+import 'push_provider.dart';
 
 class _TokenUpdateImpl extends TokenUpdateApi {
   @override
@@ -48,6 +49,18 @@ class AppMetricaPush {
     TokenUpdateApi.setup(_TokenUpdateImpl());
     PushReceiverApi.setup(_PushReceiverApiImpl());
     return _appMetricaPush.activate();
+  }
+
+  /// Initializes the library in the app for specific notification providers.
+  /// Method should be invoked after initialization of the AppMetrica SDK.
+  static Future<void> activateWithProviders(List<PushProvider> providers) {
+    AppMetricaActivationConfigHolder.activationListener = (metricaConfig) =>
+        _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
+
+    _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
+    TokenUpdateApi.setup(_TokenUpdateImpl());
+    PushReceiverApi.setup(_PushReceiverApiImpl());
+    return _appMetricaPush.activateWithProviders(providers.map((provider) => provider.nativeFactoryClass).toList());
   }
 
   /// Requests permissions to

@@ -1,4 +1,4 @@
-group "com.yandex.appmetrica_push_plugin.appmetrica_push_plugin"
+group "io.appmetrica.analytics.push.flutter"
 version "2.1.0"
 
 buildscript {
@@ -36,10 +36,16 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 34
+
+        proguardFiles("proguard/proguard-rules.pro")
+        consumerProguardFiles("proguard/consumer-rules.pro")
     }
 }
 
 dependencies {
     implementation("io.appmetrica.analytics:push:4.1.1")
     implementation("io.appmetrica.analytics:push-plugin-adapter:4.1.1")
+
+    implementation("io.appmetrica.analytics:push-provider-api:4.1.1")
+    implementation("io.appmetrica.analytics:push-provider-firebase:4.1.1")
 }

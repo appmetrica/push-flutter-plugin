@@ -1,5 +1,6 @@
 ## 2.1.0
 
+- Support work with different push providers (Firebase, RuStore, HMS).
 - Add method do get `payload` from notification.
 - Native SDK versions:
   - Android: 4.1.1

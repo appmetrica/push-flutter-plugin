@@ -20,6 +20,11 @@
     [AMPFTokenSender sendToken:[AMPFTokenStorage getToken]];
 }
 
+- (void)activateWithProvidersProviders:(NSArray<NSString *> *)providers
+                                 error:(FlutterError **)error {
+    [self activateWithError:error];
+}
+
 - (void)requestPermissionOptions:(AMPFPermissionOptions *)options error:(FlutterError **)error
 {
     if (@available(iOS 10.0, *)) {

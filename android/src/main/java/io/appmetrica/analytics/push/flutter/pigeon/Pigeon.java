@@ -240,6 +240,8 @@ public class Pigeon {
 
     void activate();
 
+    void activateWithProviders(@NonNull List<String> providers);
+
     void saveAppMetricaConfig(@NonNull String config);
 
     void getTokens(@NonNull Result<Map<String, String>> result);
@@ -264,6 +266,30 @@ public class Pigeon {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 try {
                   api.activate();
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activateWithProviders", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                List<String> providersArg = (List<String>) args.get(0);
+                try {
+                  api.activateWithProviders(providersArg);
                   wrapped.add(0, null);
                 }
  catch (Throwable exception) {
