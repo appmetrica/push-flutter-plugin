@@ -1,5 +1,6 @@
 ## 2.1.0
 
+- Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `3.2.0`.
 - Support work with different push providers (Firebase, RuStore, HMS).
 - Add method do get `payload` from notification.
 - Native SDK versions:
