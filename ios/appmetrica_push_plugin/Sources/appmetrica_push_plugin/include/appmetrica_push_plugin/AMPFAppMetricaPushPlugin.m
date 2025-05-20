@@ -1,13 +1,13 @@
 
-#import "AMPFAppMetricaPushPlugin.h"
 #import <AppMetricaPush/AppMetricaPush.h>
-#import "AMPFPigeon.h"
-#import "AMPFAppMetricaPushImplementation.h"
-#import "AMPFAppMetricaHelper.h"
-#import "AMPFTokenStorage.h"
-#import "AMPFTokenSender.h"
-#import "AMPFUtils.h"
-#import "AMPFAppMetricaPushInfoConverter.h"
+#import "AMPFAppMetricaPushPlugin.h"
+#import "../../AMPFAppMetricaHelper.h"
+#import "../../AMPFAppMetricaPushImplementation.h"
+#import "../../AMPFAppMetricaPushInfoConverter.h"
+#import "../../AMPFPigeon.h"
+#import "../../AMPFTokenSender.h"
+#import "../../AMPFTokenStorage.h"
+#import "../../AMPFUtils.h"
 
 @interface AMPFAppMetricaPushPlugin ()
 

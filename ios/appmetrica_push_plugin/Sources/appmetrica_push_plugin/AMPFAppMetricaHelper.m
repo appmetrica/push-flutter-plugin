@@ -1,6 +1,11 @@
 
-#import "AMAFAppMetricaActivator.h"
-#import "AMAFAppMetricaConfigConverterImplementation.h"
+#if SWIFT_PACKAGE
+    #import <appmetrica_plugin/../../AMAFAppMetricaActivator.h>
+    #import <appmetrica_plugin/../../AMAFAppMetricaConfigConverterImplementation.h>
+#else
+    #import <appmetrica_plugin/AMAFAppMetricaActivator.h>
+    #import <appmetrica_plugin/AMAFAppMetricaConfigConverterImplementation.h>
+#endif
 #import "AMPFAppMetricaHelper.h"
 
 @implementation AMPFAppMetricaHelper

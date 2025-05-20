@@ -2,8 +2,8 @@ import 'package:pigeon/pigeon.dart';
 
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'lib/src/appmetrica_push_api_pigeon.dart',
-  objcHeaderOut: 'ios/AppMetricaPushPlugin/AMPFPigeon.h',
-  objcSourceOut: 'ios/AppMetricaPushPlugin/AMPFPigeon.m',
+  objcHeaderOut: 'ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFPigeon.h',
+  objcSourceOut: 'ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFPigeon.m',
   objcOptions: ObjcOptions(prefix: 'AMPF'),
   javaOut: 'android/src/main/java/io/appmetrica/analytics/push/flutter/pigeon/Pigeon.java',
   javaOptions: JavaOptions(package: 'io.appmetrica.analytics.push.flutter.pigeon'),

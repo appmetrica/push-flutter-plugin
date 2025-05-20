@@ -22,23 +22,4 @@
     return nativeOptions;
 }
 
-+ (UIUserNotificationType)toUIUserNotificationType:(AMPFPermissionOptions *)options
-{
-    UIUserNotificationType nativeOptions = UIUserNotificationTypeNone;
-
-    if (options.alert.boolValue) {
-        nativeOptions |= UIUserNotificationTypeAlert;
-    }
-
-    if (options.badge.boolValue) {
-        nativeOptions |= UIUserNotificationTypeBadge;
-    }
-
-    if (options.sound.boolValue) {
-        nativeOptions |= UIUserNotificationTypeSound;
-    }
-
-    return nativeOptions;
-}
-
 @end

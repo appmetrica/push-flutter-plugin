@@ -27,17 +27,10 @@
 
 - (void)requestPermissionOptions:(AMPFPermissionOptions *)options error:(FlutterError **)error
 {
-    if (@available(iOS 10.0, *)) {
-        UNAuthorizationOptions authorizationOptions = [AMPFPermissionOptionsConverter toUNAuthorizationOptions:options];
-        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-        [center requestAuthorizationWithOptions:authorizationOptions completionHandler:^(BOOL granted, NSError *_Nullable error) {
-        }];
-    } else {
-        // iOS 9
-        UIUserNotificationType userNotificationTypes = [AMPFPermissionOptionsConverter toUIUserNotificationType:options];
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    }
+    UNAuthorizationOptions authorizationOptions = [AMPFPermissionOptionsConverter toUNAuthorizationOptions:options];
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center requestAuthorizationWithOptions:authorizationOptions completionHandler:^(BOOL granted, NSError *_Nullable error) {
+    }];
 }
 
 - (void)saveAppMetricaConfigConfig:(NSString *)config error:(FlutterError **)error

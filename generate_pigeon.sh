@@ -1,4 +1,6 @@
 #!/bin/bash
-mkdir -p ios/AppMetricaPushPlugin/
+
+set -e
+
 mkdir -p android/src/main/java/io/appmetrica/analytics/push/flutter/pigeon
-flutter pub run pigeon --input pigeons/appmetrica_push_api.dart 
+dart run pigeon --input pigeons/appmetrica_push_api.dart
