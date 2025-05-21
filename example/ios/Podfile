@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, :deployment_target => '9.0'
+platform :ios, :deployment_target => '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -28,26 +28,22 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
+#   use_frameworks!
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 target 'NotificationServiceExtension' do
-  use_frameworks!
+#   use_frameworks!
 
-  pod 'YandexMobileMetricaPush'
+  if ENV['ADD_APPMETRICA_PUSH_TO_EXTENSION'] == 'true'
+    pod 'AppMetricaPush'
+  end
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-  end
-  # fix for https://github.com/CocoaPods/CocoaPods/issues/10980
-  target = 'YandexMobileMetrica-Static_Core'
-  Dir.chdir("Pods/Target Support Files/#{target}") do
-    system "sed -i '' '/.*YandexMobileMetrica.framework/d' ./#{target}-xcframeworks-output-files.xcfilelist"
-    system "sed -i '' '/.*YandexMobileMetrica.xcframework/d' ./#{target}-xcframeworks.sh"
   end
 end

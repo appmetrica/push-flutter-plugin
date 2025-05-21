@@ -1,8 +1,8 @@
 import UIKit
 import Flutter
-import YandexMobileMetricaPush
+import AppMetricaPush
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     override func application(
         _ application: UIApplication,
@@ -10,7 +10,7 @@ import YandexMobileMetricaPush
     ) -> Bool {
         GeneratedPluginRegistrant.register(with: self)
 
-        YMPYandexMetricaPush.setExtensionAppGroup("group.com.yandex.appmetricapushplugin.appmetricaPushPluginExample")
+        AppMetricaPush.setExtensionAppGroup("group.com.yandex.appmetricapushplugin.appmetricaPushPluginExample")
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }

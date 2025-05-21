@@ -1,6 +1,6 @@
 
 import UserNotifications
-import YandexMobileMetricaPush
+import AppMetricaPush
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -14,10 +14,10 @@ class NotificationService: UNNotificationServiceExtension {
 
         if bestAttemptContent != nil {
             // Need for 'receive' tracking
-            YMPYandexMetricaPush.setExtensionAppGroup("group.com.yandex.appmetricapushplugin.appmetricaPushPluginExample")
-            YMPYandexMetricaPush.handleDidReceive(request)
+            AppMetricaPush.setExtensionAppGroup("group.com.yandex.appmetricapushplugin.appmetricaPushPluginExample")
+            AppMetricaPush.handleDidReceive(request)
             // Need to add image to push
-            YMPYandexMetricaPush.downloadAttachments(for: request) { attachments, error in
+            AppMetricaPush.downloadAttachments(for: request) { attachments, error in
                 if let error = error {
                     print("Error: \(error)")
                 }

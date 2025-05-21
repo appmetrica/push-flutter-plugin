@@ -35,7 +35,6 @@ Runner/GeneratedPluginRegistrant.*
 
 XcodeBuild
 *.lock
-
 .arcignore
 ci
 pigeons/
