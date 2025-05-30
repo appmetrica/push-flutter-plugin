@@ -47,10 +47,13 @@
     [self.registrar addApplicationDelegate:self];
 
     // Enable in-app push notifications handling in iOS 10
-    if (@available(iOS 10.0, *)) {
+    UNUserNotificationCenter *notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+    if (![notificationCenter.delegate conformsToProtocol:@protocol(FlutterAppLifeCycleProvider)]) {
         id<AMPUserNotificationCenterDelegate> delegate = [AMPAppMetricaPush userNotificationCenterDelegate];
-        delegate.nextDelegate = [UNUserNotificationCenter currentNotificationCenter].delegate;
-        [UNUserNotificationCenter currentNotificationCenter].delegate = delegate;
+        if (notificationCenter.delegate != delegate) {
+            delegate.nextDelegate = notificationCenter.delegate;
+            notificationCenter.delegate = delegate;
+        }
     }
 
     // need to call early. From dart will not work.
