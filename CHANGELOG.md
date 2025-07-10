@@ -1,11 +1,12 @@
 ## 2.1.0
 
+- Support Swift Package Manager feature
 - Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `3.2.0`.
 - Support work with different push providers (Firebase, RuStore, HMS).
 - Add method do get `payload` from notification.
 - Native SDK versions:
   - Android: 4.1.1
-  - iOS: ~> 3.0
+  - iOS: ~> 3.1
 
 ## 2.0.0
 
