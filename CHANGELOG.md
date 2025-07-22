@@ -1,8 +1,11 @@
 ## 2.2.0
 
+- Updated the minimum supported version of [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) to `3.2.1`.
+- Fix `file not found` error.
+
 ## 2.1.0
 
-- Support Swift Package Manager feature
+- Support Swift Package Manager feature.
 - Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `3.2.0`.
 - Support work with different push providers (Firebase, RuStore, HMS).
 - Add method do get `payload` from notification.
@@ -28,7 +31,7 @@
 
 ## 0.2.0
 
-- Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `1.0.1`
+- Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `1.0.1`.
 - Updated native AppMetrica Push SDK versions:
   - Android: 2.2.0
   - iOS: ~> 1.3
