@@ -1,6 +1,4 @@
 
-#import <AppMetricaPush/AppMetricaPush.h>
-#import "AMPFAppMetricaPushPlugin.h"
 #import "../../AMPFAppMetricaHelper.h"
 #import "../../AMPFAppMetricaPushImplementation.h"
 #import "../../AMPFAppMetricaPushInfoConverter.h"
@@ -8,6 +6,9 @@
 #import "../../AMPFTokenSender.h"
 #import "../../AMPFTokenStorage.h"
 #import "../../AMPFUtils.h"
+#import "AMPFAppMetricaPushPlugin.h"
+#import <AppMetricaPush/AppMetricaPush.h>
+#import <UserNotifications/UserNotifications.h>
 
 @interface AMPFAppMetricaPushPlugin ()
 
@@ -15,6 +16,7 @@
 @property(nonatomic, strong, readonly) AMPFTokenUpdateApi *tokenUpdateApi;
 @property(nonatomic, strong, readonly) AMPFPushReceiverApi *pushReceiverApi;
 @property(nonatomic, strong, readonly) AMPFAppMetricaPushImplementation *appMetricaPush;
+@property(nonatomic, weak, nullable) id<UNUserNotificationCenterDelegate> nextDelegate;
 @end
 
 @implementation AMPFAppMetricaPushPlugin
@@ -29,10 +31,7 @@
         _appMetricaPush = [[AMPFAppMetricaPushImplementation alloc] init];
 
         AMPFAppMetricaPushPigeonSetup(registrar.messenger, self.appMetricaPush);
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(_application_onDidFinishLaunchingNotification:)
-                                                     name:UIApplicationDidFinishLaunchingNotification
-                                                   object:nil];
+        [self.registrar addApplicationDelegate:self];
     }
     return self;
 }
@@ -42,33 +41,38 @@
     [registrar publish:[[AMPFAppMetricaPushPlugin alloc] initWithFlutterPluginRegistrar:registrar]];
 }
 
-- (void)_application_onDidFinishLaunchingNotification:(NSNotification *)notification
-{
-    [self.registrar addApplicationDelegate:self];
-
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Enable in-app push notifications handling in iOS 10
     UNUserNotificationCenter *notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
     if (![notificationCenter.delegate conformsToProtocol:@protocol(FlutterAppLifeCycleProvider)]) {
-        id<AMPUserNotificationCenterDelegate> delegate = [AMPAppMetricaPush userNotificationCenterDelegate];
-        if (notificationCenter.delegate != delegate) {
-            delegate.nextDelegate = notificationCenter.delegate;
-            notificationCenter.delegate = delegate;
+        id<AMPUserNotificationCenterDelegate> appMetricaPushDelegate = [AMPAppMetricaPush userNotificationCenterDelegate];
+        _nextDelegate = appMetricaPushDelegate;
+        
+        if (notificationCenter.delegate != self) {
+            appMetricaPushDelegate.nextDelegate = notificationCenter.delegate;
+            notificationCenter.delegate = self;
         }
     }
-
+    
     // need to call early. From dart will not work.
     [[UIApplication sharedApplication] registerForRemoteNotifications];
+    
+    NSDictionary *userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
 
     if ([AMPFAppMetricaHelper ensureActivated]) {
-        [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:notification.userInfo];
-        [self.appMetricaPush setUserInfo:notification.userInfo];
-        [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:notification.userInfo]
-                                                completion:^(FlutterError *_Nullable error) {
-            if (error != nil) {
-                NSLog(@"%@", error.description);
-            }
-        }];
+        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+            [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
+            [self.appMetricaPush setUserInfo:userInfo];
+            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                    completion:^(FlutterError *_Nullable error) {
+                if (error != nil) {
+                    NSLog(@"%@", error.description);
+                }
+            }];
+        }
     }
+    
+    return YES;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -91,8 +95,30 @@
 didReceiveRemoteNotification:(NSDictionary *)userInfo
       fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
-        if ([AMPFAppMetricaHelper ensureActivated]) {
+    if ([AMPFAppMetricaHelper ensureActivated]) {
+        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+            [AMPAppMetricaPush handleRemoteNotification:userInfo];
+            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                    completion:^(FlutterError *_Nullable error) {
+                if (error != nil) {
+                    NSLog(@"%@", error.description);
+                }
+            }];
+            completionHandler(UIBackgroundFetchResultNewData);
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)(void))completionHandler
+{
+    NSDictionary *userInfo = response.notification.request.content.userInfo;
+
+    if ([AMPFAppMetricaHelper ensureActivated]) {
+        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
             [AMPAppMetricaPush handleRemoteNotification:userInfo];
             [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
                                                     completion:^(FlutterError *_Nullable error) {
@@ -101,10 +127,38 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                 }
             }];
         }
-        completionHandler(UIBackgroundFetchResultNewData);
-        return YES;
     }
-    return NO;
+    if (self.nextDelegate != nil) {
+        [self.nextDelegate userNotificationCenter:center
+                   didReceiveNotificationResponse:response
+                            withCompletionHandler:completionHandler];
+    }
+    else {
+        completionHandler();
+    }
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+    if (self.nextDelegate != nil) {
+        [self.nextDelegate userNotificationCenter:center
+                          willPresentNotification:notification
+                            withCompletionHandler:completionHandler];
+    }
+    else {
+        completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
+    }
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+   openSettingsForNotification:(nullable UNNotification *)notification
+{
+    if (self.nextDelegate != nil) {
+        [self.nextDelegate userNotificationCenter:center
+                      openSettingsForNotification:notification];
+    }
 }
 
 @end
