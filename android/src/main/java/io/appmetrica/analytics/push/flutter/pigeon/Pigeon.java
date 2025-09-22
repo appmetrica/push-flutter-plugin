@@ -244,6 +244,8 @@ public class Pigeon {
 
     void saveAppMetricaConfig(@NonNull String config);
 
+    void enableLogger();
+
     void getTokens(@NonNull Result<Map<String, String>> result);
 
     void getLaunchPushInfo(@NonNull Result<AppMetricaPushInfoPigeon> result);
@@ -314,6 +316,28 @@ public class Pigeon {
                 String configArg = (String) args.get(0);
                 try {
                   api.saveAppMetricaConfig(configArg);
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.enableLogger", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  api.enableLogger();
                   wrapped.add(0, null);
                 }
  catch (Throwable exception) {

@@ -202,6 +202,23 @@ void AMPFAppMetricaPushPigeonSetup(id<FlutterBinaryMessenger> binaryMessenger, N
   {
     FlutterBasicMessageChannel *channel =
       [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.enableLogger"
+        binaryMessenger:binaryMessenger
+        codec:AMPFAppMetricaPushPigeonGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(enableLoggerWithError:)], @"AMPFAppMetricaPushPigeon api (%@) doesn't respond to @selector(enableLoggerWithError:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FlutterError *error;
+        [api enableLoggerWithError:&error];
+        callback(wrapResult(nil, error));
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
         initWithName:@"dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.getTokens"
         binaryMessenger:binaryMessenger
         codec:AMPFAppMetricaPushPigeonGetCodec()];

@@ -56,6 +56,10 @@
     }
 }
 
+- (void)enableLoggerWithError:(FlutterError **)error {
+    // do nothing
+}
+
 - (void)setUserInfo:(NSDictionary *)userInfo
 {
     _userInfo = userInfo;

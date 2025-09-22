@@ -1,6 +1,7 @@
 ## 2.4.0
 
 - Update AGP version to `8.2.0`.
+- Add `AppMetricaPush.enableLogger` method.
 
 ## 2.3.0
 

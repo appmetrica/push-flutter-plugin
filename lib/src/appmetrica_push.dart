@@ -84,6 +84,9 @@ class AppMetricaPush {
   static Future<AppMetricaPushInfo> getLaunchPushInfo() =>
       _appMetricaPush.getLaunchPushInfo().then((value) => AppMetricaPushInfo.fromPigeon(value));
 
+  /// Enables public logs.
+  static Future<void> enableLogger() => _appMetricaPush.enableLogger();
+
   static Future<void> _saveAppMetricaConfigToPreferences(
       final AppMetricaConfig? config) async {
     if (config != null) {

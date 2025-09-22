@@ -24,6 +24,7 @@ abstract class AppMetricaPushPigeon {
   void activate();
   void activateWithProviders(List<String> providers);
   void saveAppMetricaConfig(String config);
+  void enableLogger();
   @async
   Map<String, String> getTokens();
   @async

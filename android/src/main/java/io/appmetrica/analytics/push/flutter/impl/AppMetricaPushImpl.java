@@ -81,6 +81,11 @@ public class AppMetricaPushImpl implements Pigeon.AppMetricaPushPigeon {
     }
 
     @Override
+    public void enableLogger() {
+        AppMetricaPush.enableLogger();
+    }
+
+    @Override
     public void getTokens(@NonNull Pigeon.Result<Map<String, String>> result) {
         final Map<String, String> tokens = AppMetricaPush.getTokens();
         result.success(tokens != null ? tokens : new HashMap<>());

@@ -36,6 +36,7 @@ NSObject<FlutterMessageCodec> *AMPFAppMetricaPushPigeonGetCodec(void);
 - (void)activateWithError:(FlutterError *_Nullable *_Nonnull)error;
 - (void)activateWithProvidersProviders:(NSArray<NSString *> *)providers error:(FlutterError *_Nullable *_Nonnull)error;
 - (void)saveAppMetricaConfigConfig:(NSString *)config error:(FlutterError *_Nullable *_Nonnull)error;
+- (void)enableLoggerWithError:(FlutterError *_Nullable *_Nonnull)error;
 - (void)getTokensWithCompletion:(void (^)(NSDictionary<NSString *, NSString *> *_Nullable, FlutterError *_Nullable))completion;
 - (void)getLaunchPushInfoWithCompletion:(void (^)(AMPFAppMetricaPushInfoPigeon *_Nullable, FlutterError *_Nullable))completion;
 - (void)requestPermissionOptions:(AMPFPermissionOptions *)options error:(FlutterError *_Nullable *_Nonnull)error;
