@@ -2,6 +2,7 @@
 
 - Update AGP version to `8.2.0`.
 - Add `AppMetricaPush.enableLogger` method.
+- Update min sdk environment version to `2.15.0`.
 
 ## 2.3.0
 
