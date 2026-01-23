@@ -10,7 +10,7 @@ class _TokenUpdateImpl extends TokenUpdateApi {
   @override
   void onTokenUpdated(Map<String?, String?> newTokens) {
     AppMetricaPush._tokenStreamController
-        .add(newTokens.map((key, value) => MapEntry(key as String, value)));
+        .add(newTokens.map((String? key, String? value) => MapEntry<String, String?>(key as String, value)));
   }
 }
 
@@ -25,10 +25,10 @@ class _PushReceiverApiImpl extends PushReceiverApi {
 class AppMetricaPush {
   AppMetricaPush._();
 
-  static final _appMetricaPush = AppMetricaPushPigeon();
-  static final _tokenStreamController =
+  static final AppMetricaPushPigeon _appMetricaPush = AppMetricaPushPigeon();
+  static final StreamController<Map<String, String?>> _tokenStreamController =
       StreamController<Map<String, String?>>.broadcast();
-  static final _pushInfoStreamController =
+  static final StreamController<AppMetricaPushInfo> _pushInfoStreamController =
       StreamController<AppMetricaPushInfo>.broadcast();
 
   /// Token update stream.
@@ -42,7 +42,7 @@ class AppMetricaPush {
 
   /// Initializes the library in the app. Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activate() {
-    AppMetricaActivationConfigHolder.activationListener = (metricaConfig) =>
+    AppMetricaActivationConfigHolder.activationListener = (AppMetricaConfig? metricaConfig) =>
         _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
 
     _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
@@ -54,13 +54,13 @@ class AppMetricaPush {
   /// Initializes the library in the app for specific notification providers.
   /// Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activateWithProviders(List<PushProvider> providers) {
-    AppMetricaActivationConfigHolder.activationListener = (metricaConfig) =>
+    AppMetricaActivationConfigHolder.activationListener = (AppMetricaConfig? metricaConfig) =>
         _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
 
     _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
     TokenUpdateApi.setup(_TokenUpdateImpl());
     PushReceiverApi.setup(_PushReceiverApiImpl());
-    return _appMetricaPush.activateWithProviders(providers.map((provider) => provider.nativeFactoryClass).toList());
+    return _appMetricaPush.activateWithProviders(providers.map((PushProvider provider) => provider.nativeFactoryClass).toList());
   }
 
   /// Requests permissions to
@@ -78,11 +78,11 @@ class AppMetricaPush {
   /// Returns a list of tokens for push providers that AppMetrica Push SDK was initialized with.
   static Future<Map<String, String?>> getTokens() =>
       _appMetricaPush.getTokens().then(
-          (value) => value.map((key, value) => MapEntry(key as String, value)));
+          (Map<String?, String?> value) => value.map((String? key, String? value) => MapEntry<String, String?>(key as String, value)));
 
   /// Returns push info of push notification that launched application.
   static Future<AppMetricaPushInfo> getLaunchPushInfo() =>
-      _appMetricaPush.getLaunchPushInfo().then((value) => AppMetricaPushInfo.fromPigeon(value));
+      _appMetricaPush.getLaunchPushInfo().then((AppMetricaPushInfoPigeon value) => AppMetricaPushInfo.fromPigeon(value));
 
   /// Enables public logs.
   static Future<void> enableLogger() => _appMetricaPush.enableLogger();

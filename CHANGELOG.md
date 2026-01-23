@@ -1,5 +1,7 @@
 ## 2.5.0
 
+- Add `AppMetricaPushInfo` to public API.
+
 ## 2.4.0
 
 - Update AGP version to `8.2.0`.
