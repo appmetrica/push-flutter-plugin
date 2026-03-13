@@ -54,6 +54,7 @@
   "example/ios/NotificationServiceExtension/NotificationService.swift":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/NotificationServiceExtension/NotificationService.swift",
   "example/ios/NotificationServiceExtension/NotificationServiceExtension.entitlements":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/NotificationServiceExtension/NotificationServiceExtension.entitlements",
   "example/ios/Podfile":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/Podfile",
+  "example/ios/Podfile.lock":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/Podfile.lock",
   "example/ios/Runner.xcodeproj/project.pbxproj":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/Runner.xcodeproj/project.pbxproj",
   "example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
   "example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist":"mobile/metrika/flutter/appmetrica_push_plugin/example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
