@@ -1,5 +1,6 @@
 ## 3.0.0
 
+- Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `4.0.0`.
 - Update minimum Flutter version to 3.38.0 (Dart SDK 3.10.0).
 - Add `AppMetricaPushInfo` to public API.
 - The specification of the native SDK version for iOS has been improved: now it defines a range from the minimum version up to the next major version.
