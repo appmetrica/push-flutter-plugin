@@ -1,5 +1,6 @@
 ## 3.0.0
 
+- Add UIScene lifecycle support for iOS. Launch push notification detection now works correctly in apps using UIScene (required by iOS 27+, default in Flutter 3.41+).
 - Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `4.0.0`.
 - Update minimum Flutter version to 3.38.0 (Dart SDK 3.10.0).
 - Add `AppMetricaPushInfo` to public API.

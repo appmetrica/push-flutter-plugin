@@ -32,6 +32,7 @@
 
         AMPFAppMetricaPushPigeonSetup(registrar.messenger, self.appMetricaPush);
         [self.registrar addApplicationDelegate:self];
+        [self.registrar addSceneDelegate:self];
     }
     return self;
 }
@@ -109,6 +110,29 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
         }
     }
     return NO;
+}
+
+- (BOOL)scene:(UIScene *)scene
+    willConnectToSession:(UISceneSession *)session
+                 options:(UISceneConnectionOptions *)connectionOptions
+{
+    UNNotificationResponse *notificationResponse = connectionOptions.notificationResponse;
+    if (notificationResponse != nil) {
+        NSDictionary *userInfo = notificationResponse.notification.request.content.userInfo;
+        if ([AMPFAppMetricaHelper ensureActivated]) {
+            if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+                [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
+                [self.appMetricaPush setUserInfo:userInfo];
+                [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                        completion:^(FlutterError *_Nullable error) {
+                    if (error != nil) {
+                        NSLog(@"%@", error.description);
+                    }
+                }];
+            }
+        }
+    }
+    return YES;
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
