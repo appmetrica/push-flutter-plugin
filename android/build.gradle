@@ -43,9 +43,8 @@ android {
 }
 
 dependencies {
-    implementation("io.appmetrica.analytics:push:4.1.1")
-    implementation("io.appmetrica.analytics:push-plugin-adapter:4.1.1")
+    implementation("io.appmetrica.analytics:push:4.3.0")
 
-    implementation("io.appmetrica.analytics:push-provider-api:4.1.1")
-    implementation("io.appmetrica.analytics:push-provider-firebase:4.1.1")
+    implementation("io.appmetrica.analytics:push-provider-api:4.3.0")
+    implementation("io.appmetrica.analytics:push-provider-firebase:4.3.0")
 }

@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'appmetrica_push_plugin_test.mocks.dart';
 
 class MockHandler extends Mock {
   Future<ByteData?>? call(ByteData? message);
@@ -28,28 +27,6 @@ void main() {
         'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', mock.call);
     await AppMetricaPush.activate();
     verify(mock.call(any));
-  });
-
-  testWidgets('Test Activation With Activated Metrica',
-      (WidgetTester tester) async {
-    final MockHandler mock = MockHandler();
-    final MockAppMetricaConfig config = MockAppMetricaConfig();
-    const String apiKey = 'some api key';
-    const String configJson = '{"apiKey":"$apiKey"}';
-
-    when(config.toJson())
-        .thenAnswer((Invocation realInvocation) => Future<String>.value(configJson));
-    AppMetricaActivationConfigHolder.lastActivationConfig = config;
-    when(mock.call(any)).thenAnswer((Invocation _) => stubHandler(null));
-
-    tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.activate', stubHandler);
-    tester.binding.defaultBinaryMessenger.setMockMessageHandler(
-        'dev.flutter.pigeon.appmetrica_push_plugin.AppMetricaPushPigeon.saveAppMetricaConfig', mock.call);
-    await AppMetricaPush.activate();
-    expect(
-        (codec.decodeMessage(verify(mock.call(captureAny)).captured.first as ByteData?) as List<Object?>).first,
-        contains(apiKey));
   });
 
   testWidgets('Test Get Tokens', (WidgetTester tester) async {

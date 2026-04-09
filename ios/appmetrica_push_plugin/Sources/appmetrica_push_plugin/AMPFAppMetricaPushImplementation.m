@@ -1,7 +1,6 @@
 
 #import <UserNotifications/UserNotifications.h>
 #import "AMPFAppMetricaPushImplementation.h"
-#import "AMPFAppMetricaHelper.h"
 #import "AMPFTokenStorage.h"
 #import "AMPFTokenSender.h"
 #import "AMPFPermissionOptionsConverter.h"
@@ -31,11 +30,6 @@
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center requestAuthorizationWithOptions:authorizationOptions completionHandler:^(BOOL granted, NSError *_Nullable error) {
     }];
-}
-
-- (void)saveAppMetricaConfigConfig:(NSString *)config error:(FlutterError **)error
-{
-    [AMPFAppMetricaHelper saveConfig:config];
 }
 
 - (void)getTokensWithCompletion:(void (^)(NSDictionary<NSString *, NSString *> *, FlutterError *))completion

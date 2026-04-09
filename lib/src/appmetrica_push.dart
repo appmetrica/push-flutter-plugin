@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:appmetrica_plugin/appmetrica_plugin.dart';
-
 import 'appmetrica_push_api_pigeon.dart';
 import 'appmetrica_push_info.dart';
 import 'push_provider.dart';
@@ -42,10 +40,6 @@ class AppMetricaPush {
 
   /// Initializes the library in the app. Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activate() {
-    AppMetricaActivationConfigHolder.activationListener = (AppMetricaConfig? metricaConfig) =>
-        _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
-
-    _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
     TokenUpdateApi.setup(_TokenUpdateImpl());
     PushReceiverApi.setup(_PushReceiverApiImpl());
     return _appMetricaPush.activate();
@@ -54,10 +48,6 @@ class AppMetricaPush {
   /// Initializes the library in the app for specific notification providers.
   /// Method should be invoked after initialization of the AppMetrica SDK.
   static Future<void> activateWithProviders(List<PushProvider> providers) {
-    AppMetricaActivationConfigHolder.activationListener = (AppMetricaConfig? metricaConfig) =>
-        _saveAppMetricaConfigToPreferences(metricaConfig).ignore();
-
-    _saveAppMetricaConfigToPreferences(AppMetricaActivationConfigHolder.lastActivationConfig).ignore();
     TokenUpdateApi.setup(_TokenUpdateImpl());
     PushReceiverApi.setup(_PushReceiverApiImpl());
     return _appMetricaPush.activateWithProviders(providers.map((PushProvider provider) => provider.nativeFactoryClass).toList());
@@ -86,13 +76,4 @@ class AppMetricaPush {
 
   /// Enables public logs.
   static Future<void> enableLogger() => _appMetricaPush.enableLogger();
-
-  static Future<void> _saveAppMetricaConfigToPreferences(
-      final AppMetricaConfig? config) async {
-    if (config != null) {
-      return _appMetricaPush.saveAppMetricaConfig(await config.toJson());
-    } else {
-      return Future<void>.value();
-    }
-  }
 }

@@ -89,8 +89,6 @@
   "ios/.pubignore":"mobile/metrika/flutter/appmetrica_push_plugin/ios/.pubignore",
   "ios/appmetrica_push_plugin.podspec":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin.podspec",
   "ios/appmetrica_push_plugin/Package.swift":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Package.swift",
-  "ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaHelper.h":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaHelper.h",
-  "ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaHelper.m":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaHelper.m",
   "ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushImplementation.h":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushImplementation.h",
   "ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushImplementation.m":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushImplementation.m",
   "ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushInfoConverter.h":"mobile/metrika/flutter/appmetrica_push_plugin/ios/appmetrica_push_plugin/Sources/appmetrica_push_plugin/AMPFAppMetricaPushInfoConverter.h",

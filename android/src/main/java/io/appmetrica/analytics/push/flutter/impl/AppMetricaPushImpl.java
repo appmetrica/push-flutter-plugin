@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.appmetrica.analytics.push.AppMetricaPush;
 import io.appmetrica.analytics.push.flutter.pigeon.Pigeon;
-import io.appmetrica.analytics.push.plugin.adapter.internal.AppMetricaConfigStorage;
 import io.appmetrica.analytics.push.provider.api.PushServiceControllerProvider;
 import java.util.HashMap;
 import java.util.List;
@@ -73,11 +72,6 @@ public class AppMetricaPushImpl implements Pigeon.AppMetricaPushPigeon {
     @Override
     public void requestPermission(@NonNull Pigeon.PermissionOptions options) {
         // do nothing
-    }
-
-    @Override
-    public void saveAppMetricaConfig(@NonNull String config) {
-        AppMetricaConfigStorage.saveConfig(context, config);
     }
 
     @Override

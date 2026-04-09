@@ -5,6 +5,9 @@
 - Update minimum Flutter version to 3.38.0 (Dart SDK 3.10.0).
 - Add `AppMetricaPushInfo` to public API.
 - The specification of the native SDK version for iOS has been improved: now it defines a range from the minimum version up to the next major version.
+- Native SDK versions:
+  - Android: 4.3.0
+  - iOS: 3.4
 
 ## 2.4.0
 

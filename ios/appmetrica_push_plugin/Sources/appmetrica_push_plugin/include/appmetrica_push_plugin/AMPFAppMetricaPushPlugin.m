@@ -1,5 +1,4 @@
 
-#import "../../AMPFAppMetricaHelper.h"
 #import "../../AMPFAppMetricaPushImplementation.h"
 #import "../../AMPFAppMetricaPushInfoConverter.h"
 #import "../../AMPFPigeon.h"
@@ -60,17 +59,15 @@
     
     NSDictionary *userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
 
-    if ([AMPFAppMetricaHelper ensureActivated]) {
-        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
-            [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
-            [self.appMetricaPush setUserInfo:userInfo];
-            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
-                                                    completion:^(FlutterError *_Nullable error) {
-                if (error != nil) {
-                    NSLog(@"%@", error.description);
-                }
-            }];
-        }
+    if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+        [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
+        [self.appMetricaPush setUserInfo:userInfo];
+        [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                completion:^(FlutterError *_Nullable error) {
+            if (error != nil) {
+                NSLog(@"%@", error.description);
+            }
+        }];
     }
     
     return YES;
@@ -78,9 +75,7 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    if ([AMPFAppMetricaHelper ensureActivated]) {
-        [AMPFTokenSender sendToken:deviceToken];
-    }
+    [AMPFTokenSender sendToken:deviceToken];
     [AMPFTokenStorage saveToken:deviceToken];
 
     NSString *strToken = [AMPFUtils stringForTokenData:deviceToken];
@@ -96,18 +91,16 @@
 didReceiveRemoteNotification:(NSDictionary *)userInfo
       fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if ([AMPFAppMetricaHelper ensureActivated]) {
-        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
-            [AMPAppMetricaPush handleRemoteNotification:userInfo];
-            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
-                                                    completion:^(FlutterError *_Nullable error) {
-                if (error != nil) {
-                    NSLog(@"%@", error.description);
-                }
-            }];
-            completionHandler(UIBackgroundFetchResultNewData);
-            return YES;
-        }
+    if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+        [AMPAppMetricaPush handleRemoteNotification:userInfo];
+        [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                completion:^(FlutterError *_Nullable error) {
+            if (error != nil) {
+                NSLog(@"%@", error.description);
+            }
+        }];
+        completionHandler(UIBackgroundFetchResultNewData);
+        return YES;
     }
     return NO;
 }
@@ -119,17 +112,15 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     UNNotificationResponse *notificationResponse = connectionOptions.notificationResponse;
     if (notificationResponse != nil) {
         NSDictionary *userInfo = notificationResponse.notification.request.content.userInfo;
-        if ([AMPFAppMetricaHelper ensureActivated]) {
-            if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
-                [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
-                [self.appMetricaPush setUserInfo:userInfo];
-                [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
-                                                        completion:^(FlutterError *_Nullable error) {
-                    if (error != nil) {
-                        NSLog(@"%@", error.description);
-                    }
-                }];
-            }
+        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+            [AMPAppMetricaPush handleApplicationDidFinishLaunchingWithOptions:userInfo];
+            [self.appMetricaPush setUserInfo:userInfo];
+            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                    completion:^(FlutterError *_Nullable error) {
+                if (error != nil) {
+                    NSLog(@"%@", error.description);
+                }
+            }];
         }
     }
     return YES;
@@ -141,16 +132,14 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 {
     NSDictionary *userInfo = response.notification.request.content.userInfo;
 
-    if ([AMPFAppMetricaHelper ensureActivated]) {
-        if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
-            [AMPAppMetricaPush handleRemoteNotification:userInfo];
-            [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
-                                                    completion:^(FlutterError *_Nullable error) {
-                if (error != nil) {
-                    NSLog(@"%@", error.description);
-                }
-            }];
-        }
+    if ([AMPAppMetricaPush isNotificationRelatedToSDK:userInfo]) {
+        [AMPAppMetricaPush handleRemoteNotification:userInfo];
+        [self.pushReceiverApi onPushReceivedPushInfoPigeon:[AMPFAppMetricaPushInfoConverter toPigeon:userInfo]
+                                                completion:^(FlutterError *_Nullable error) {
+            if (error != nil) {
+                NSLog(@"%@", error.description);
+            }
+        }];
     }
     if (self.nextDelegate != nil) {
         [self.nextDelegate userNotificationCenter:center
