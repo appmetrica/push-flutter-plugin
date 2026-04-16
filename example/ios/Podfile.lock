@@ -9,7 +9,7 @@ PODS:
     - AppMetricaScreenshot (~> 6.1)
     - AppMetricaWebKit (~> 6.1)
     - Flutter
-  - appmetrica_push_plugin (3.0.0):
+  - appmetrica_push_plugin (3.1.0):
     - appmetrica_plugin
     - AppMetricaPush (~> 3.4)
     - Flutter
@@ -155,7 +155,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   appmetrica_plugin: 9e361bd8fbe26c65bddf660594c4c472606ad29e
-  appmetrica_push_plugin: 785cb7321bf694f8375f5332c0ea193dbcd94548
+  appmetrica_push_plugin: b6a7602f4105a1d1b9bde0a2a9ae10f9618ee130
   AppMetricaAdSupport: 9b40f5c455c31a2b673923d51a4d067d78d5d722
   AppMetricaCore: 0653dd08a23e09c985073aa74c65bdf146b90f44
   AppMetricaCoreExtension: 00d77082353e6a90bcb894a7c7dc2ade43c61fb3

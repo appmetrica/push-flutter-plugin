@@ -17,7 +17,7 @@ In your flutter project add the following dependency:
 ```
 dependencies:
   ...
-  appmetrica_push_plugin: ^3.0.0
+  appmetrica_push_plugin: ^3.1.0
 ```
 
 Activate [AppMetrica SDK for Flutter](https://pub.dev/packages/appmetrica_plugin) using `AppMetrica.activate` with your API Key
