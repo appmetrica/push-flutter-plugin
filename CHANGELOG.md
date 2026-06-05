@@ -1,5 +1,9 @@
 ## 3.1.0
 
+## 3.0.1
+
+- Fix `Could not resolve package dependencies` error while building with SPM.
+
 ## 3.0.0
 
 - Add UIScene lifecycle support for iOS. Launch push notification detection now works correctly in apps using UIScene (required by iOS 27+, default in Flutter 3.41+).
