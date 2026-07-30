@@ -123,7 +123,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
             }];
         }
     }
-    return YES;
+    // Always NO: we only observe the launch notification and must not consume
+    // connectionOptions so other plugins (e.g. firebase_messaging) still receive them.
+    return NO;
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center

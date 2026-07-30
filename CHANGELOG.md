@@ -1,5 +1,7 @@
 ## 3.1.0
 
+- Fix iOS UIScene conflict with other plugins (e.g. `firebase_messaging`): `scene:willConnectToSession:options:` no longer returns `YES`, so `connectionOptions` are not consumed and remain available to subsequent plugins.
+
 ## 3.0.1
 
 - Fix `Could not resolve package dependencies` error while building with SPM.
