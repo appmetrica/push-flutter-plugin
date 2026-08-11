@@ -6,6 +6,7 @@
 ## `3.1.0`
 
 - Fix iOS UIScene conflict with other plugins (e.g. `firebase_messaging`): `scene:willConnectToSession:options:` no longer returns `YES`, so `connectionOptions` are not consumed and remain available to subsequent plugins.
+- Updated supported [appmetrica_plugin](https://pub.dev/packages/appmetrica_plugin) version to `4.1.0`.
 
 ## `3.0.1`
 
