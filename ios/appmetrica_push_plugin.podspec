@@ -13,6 +13,7 @@ Pod::Spec.new do |s|
   s.source_files = 'appmetrica_push_plugin/Sources/appmetrica_push_plugin/**/*.{h,m}'
   s.public_header_files = 'appmetrica_push_plugin/Sources/appmetrica_push_plugin/include/**/*.h'
   s.dependency 'Flutter'
+  s.dependency 'AppMetricaCore', '~> 6.2'
   s.dependency 'AppMetricaPush', '~> 3.4'
   s.static_framework = true
   s.platform = :ios, '15.0'

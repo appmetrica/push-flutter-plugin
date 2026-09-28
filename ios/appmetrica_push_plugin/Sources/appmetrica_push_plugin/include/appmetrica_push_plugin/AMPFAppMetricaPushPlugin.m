@@ -6,6 +6,7 @@
 #import "../../AMPFTokenStorage.h"
 #import "../../AMPFUtils.h"
 #import "AMPFAppMetricaPushPlugin.h"
+#import <AppMetricaCore/AppMetricaCore.h>
 #import <AppMetricaPush/AppMetricaPush.h>
 #import <UserNotifications/UserNotifications.h>
 
@@ -75,8 +76,18 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [AMPFTokenSender sendToken:deviceToken];
+    // APNs can arrive before AppMetrica.activate. Push SDK raises if AppMetrica is not activated.
+    // Save first so Dart AppMetricaPush.activate can send the stored token.
     [AMPFTokenStorage saveToken:deviceToken];
+    if (AMAAppMetrica.isActivated) {
+        @try {
+            [AMPFTokenSender sendToken:deviceToken];
+        } @catch (NSException *exception) {
+            NSLog(@"[AMPFAppMetricaPushPlugin] Failed to send APNs token to AppMetrica: %@", exception);
+        }
+    } else {
+        NSLog(@"[AMPFAppMetricaPushPlugin] Skip sending APNs token: AppMetrica is not activated yet");
+    }
 
     NSString *strToken = [AMPFUtils stringForTokenData:deviceToken];
     NSDictionary *tokens = strToken == nil ? @{} : @{@"apns": strToken};

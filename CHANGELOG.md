@@ -5,6 +5,8 @@
 
 ## `3.2.0`
 
+- iOS: do not send the APNs token to AppMetrica from `didRegisterForRemoteNotifications` until AppMetrica is activated. The token is stored and sent on Dart `AppMetricaPush.activate`, which avoids a crash if AppMetrica is not initialized yet.
+
 ## `3.1.0`
 
 - Fix iOS UIScene conflict with other plugins (e.g. `firebase_messaging`): `scene:willConnectToSession:options:` no longer returns `YES`, so `connectionOptions` are not consumed and remain available to subsequent plugins.

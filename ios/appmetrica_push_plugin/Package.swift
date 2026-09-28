@@ -13,6 +13,10 @@ let package = Package(
     ],
     dependencies: [
         .package(
+            url: "https://github.com/appmetrica/appmetrica-sdk-ios",
+            "6.2.0"..<"7.0.0"
+        ),
+        .package(
             url: "https://github.com/appmetrica/push-sdk-ios",
             .upToNextMajor(from: "3.4.0")
         ),
@@ -21,6 +25,7 @@ let package = Package(
         .target(
             name: "appmetrica_push_plugin",
             dependencies: [
+                .product(name: "AppMetricaCore", package: "appmetrica-sdk-ios"),
                 .product(name: "AppMetricaPush", package: "push-sdk-ios"),
             ],
             resources: [],
