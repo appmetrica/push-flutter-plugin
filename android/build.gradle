@@ -53,7 +53,7 @@ dependencies {
     implementation("io.appmetrica.analytics:push-provider-api:4.3.0")
     implementation("io.appmetrica.analytics:push-provider-firebase:4.3.0")
 
-    testImplementation("io.appmetrica.gradle:android-test-utils:2.0.0-beta+128")
+    testImplementation("io.appmetrica.gradle:android-test-utils:2.0.0-beta+131")
 }
 
 // Required for Robolectric on JDK 17+: https://robolectric.org/getting-started/
